@@ -115,7 +115,7 @@ class MailingPromoAwsCommand extends Command
                 "marker" => $marker
             ];
             $io->note(sprintf('User %s: %s', $value["user_id"], $email));
-            // $this->mailingFormHandler->processSendMailing($m, $data);
+            $this->mailingFormHandler->processSendMailing($m, $data);
             sleep(self::SLEEP);
         }
 
