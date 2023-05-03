@@ -10,6 +10,12 @@
 				<a href="/login" class="nav-link px-2 text-body-secondary">Login</a>
 			{% endif %}
 		</li>
+		<li class="nav-item">
+			{% if app.user %}
+				<a href="/logout" class="nav-link px-2 text-body-secondary">Logout</a>
+			{% endif %}
+		</li>
 	</ul>
 	<p class="text-center text-body-secondary">© {{ 'now' | date('Y') }} Veronika Project LTD</p>
+	<p class="text-center text-body-secondary">Current time: {{ 'now' | date('Y-m-d H:i:s') }}</p>
 </footer>
