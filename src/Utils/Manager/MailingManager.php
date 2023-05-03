@@ -365,6 +365,27 @@ class MailingManager
      * @param string
      * @return bool
      */
+    public function isMailingItemSent(int $uid, string $email, int $mid): bool
+    {
+        $mailingItemRepository = $this->_entityManager->getRepository(MailingItem::class);
+        $sign = $this->createPixelUserSign($uid, $mid);
+        $miEntity = new MailingItem();
+        $mis = $mailingItemRepository->findOneBy(["sign" => $sign]);
+        if (!$mis) {
+            return false;
+        }
+        elseif($mis && $mis->getSentAt() == null) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param int
+     * @param int
+     * @param string
+     * @return bool
+     */
     public function createMailingItem(int $uid, string $email, int $mid): string
     {
         $mailingItemRepository = $this->_entityManager->getRepository(MailingItem::class);
