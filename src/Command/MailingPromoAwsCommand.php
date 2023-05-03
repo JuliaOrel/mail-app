@@ -86,7 +86,11 @@ class MailingPromoAwsCommand extends Command
             if (!empty($emails[$email])) {
               continue;
             }
-            $this->mailingManager->isMailingItemSent($value["user_id"], $email, $m->getId());
+            $sent = $this->mailingManager->isMailingItemSent($value["user_id"], $email, $m->getId());
+            if ($sent) {
+                $io->note(sprintf('User already sent %s: %s', $value["user_id"], $email));
+                continue;
+            }
             $emails[$email] = $email;
             $isActive = $us->userIsActive($this->customConnect, $this->userClientsRepository, $value["user_id"]);
             if (!$isActive) {
