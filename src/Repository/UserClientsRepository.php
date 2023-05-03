@@ -144,6 +144,17 @@ class UserClientsRepository extends ServiceEntityRepository
      /**
      * @return int Returns int
       */
+      public function getUserUnsubscribeNews($customConnect, int $uid): int
+      {
+        $sql = 'SELECT user_id FROM bm_users_unsubscribe WHERE unsubscribe_news = 1 AND user_id = :uid LIMIT 1';
+        $stmt = $customConnect->prepare($sql);
+        $resultSet = $stmt->executeQuery(["uid" => $uid]);
+        return $resultSet->fetchOne();
+      }
+    
+     /**
+     * @return int Returns int
+      */
       public function getUserUnsubscribeNewMails($customConnect, int $uid): int
       {
         $sql = 'SELECT user_id FROM bm_users_unsubscribe WHERE unsubscribe_message = 1 AND user_id = :uid LIMIT 1';
