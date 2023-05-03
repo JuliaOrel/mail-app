@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title_detailed %}Mailing Items
+{% endblock %}
+
+{% block body %}
+	<div class="card shadow mb-4">
+		<div class="card-header py-3">
+			<div class="d-flex justify-content-between align-items-center">
+				<h6 class="m-0 font-weight-bold text-primary">Mailing items</h6>
+				<a href="{{ path('app_mailing_item_add') }}" class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm">
+					<i class="fas fa-plus fa-sm text-white-50"></i>
+					Add new
+				</a>
+			</div>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+				<table class="table table-bordered" id="main_table">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Mailing</th>
+							<th>User</th>
+							<th>Sent</th>
+							<th>Is published</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for mailingItem in mailingItems %}
+							<tr>
+								<td>{{ mailingItem.id }}</td>
+								<td>-</td>
+								<td>{{ mailingItem.userId }}</td>
+								<td>{{ mailingItem.sentAt }}</td>
+								<td>
+									<i class="fas fa-check fa-sm" style="color: {% if mailing.isPublished %}green{% else %}lightgray{% endif %};"></i>
+								</td>
+								<td>
+									<a href="/mailing-item/edit/{{ mailingItem.id }}" class="btn btn-outline-info">Edit</a>
+									<a href="/mailing-item/delete/{{ mailingItem.id }}" class="btn btn-outline-danger">Edit</a>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}

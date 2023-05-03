@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Homepage - RankedChoice{% endblock %}
+{% block page_keywords %}Jeans, Jackets{% endblock %}
+{% block page_description %}Main page of RankedChoice shop!{% endblock %}
+
+{% block body %}
+    <div class="container-fluid mt-2">
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Save mailing list </h2>
+                {{ form(form) }}
+                ----------------------------
+
+                {# {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                {{ form_end(form) }} #}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TEST mailing - Mail.VeronikaLove.com{% endblock %}
+
+{% block body %}
+    <div class="container-fluid mt-2">
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Test mailing</h2>
+                <div class="mt-3 mb-3">
+                    <a href="{{ path('app_mailing_edit', {'id': mailing.id}) }}" class="btn btn-outline-info">EDIT</a>
+                    <a href="{{ path('app_mailing_test', {'id': mailing.id}) }}" class="btn btn-outline-info active">TEST</a>
+                </div>
+                {{ form(form) }}
+            </div>
+            <div class="col-lg-6">
+                {{ mailing.body | raw }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

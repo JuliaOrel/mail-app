@@ -1,0 +1,7 @@
+parameters:
+aws_sdk:
+  version: "latest"
+  region: "eu-west-1"
+  credentials:
+    key: "USERS_AWS_KEY"
+    secret: "USERS_AWS_SECRET"

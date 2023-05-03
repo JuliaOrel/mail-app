@@ -1,0 +1,15 @@
+<footer class="footer mt-auto py-3 bg-body-tertiary">
+	<ul class="nav justify-content-center border-bottom pb-3 mb-3">
+		<li class="nav-item">
+			<a href="/" class="nav-link px-2 text-body-secondary">Home</a>
+		</li>
+		<li class="nav-item">
+			{% if app.user %}
+				<a href="/profile" class="nav-link px-2 text-body-secondary">Profile</a>
+			{% else %}
+				<a href="/login" class="nav-link px-2 text-body-secondary">Login</a>
+			{% endif %}
+		</li>
+	</ul>
+	<p class="text-center text-body-secondary">© {{ 'now' | date('Y') }} Veronika Project LTD</p>
+</footer>

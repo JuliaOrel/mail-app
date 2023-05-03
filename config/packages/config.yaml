@@ -1,0 +1,4 @@
+twig:
+    globals:
+        site_theme: '%env(APP_SITE_THEME)%'
+        site_admin_theme: '%env(APP_SITE_ADMIN_THEME)%'

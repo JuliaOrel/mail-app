@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add mailing - Mail.VeronikaLove.com{% endblock %}
+
+{% block body %}
+    <div class="container-fluid mt-2">
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Add mailing</h2>
+                {{ form(form) }}
+            </div>
+            <div class="col-lg-6">
+                <h3>Unsubscribe blocks</h3>
+                <div id="container-mailing-unsubscribe-blocks" >
+                    {% for unsubscribeBlock in unsubscribeBlocks %}
+                        <h5>{{ unsubscribeBlock.name }}</h5>
+                        <div>{{ unsubscribeBlock.value }}</div>
+                        <hr>
+                        <div>rendered:<div>
+                        <div>{{ unsubscribeBlock.value |raw }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

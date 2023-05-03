@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit mailing - Mail.VeronikaLove.com{% endblock %}
+
+{% block body %}
+    <script src="/build/js/plugins/monaco-editor/min/vs/loader.js"></script>
+    <div class="container-fluid mt-2">
+        <div class="row">
+            <div class="col-lg-12">
+                <div id="container-mailing-editor" style="width: 100%; height: 80vh; border: 1px solid grey"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mt-3 mb-3">
+                    <a href="{{ path('app_mailing_edit', {'id': mailing.id}) }}" class="btn btn-outline-info active">EDIT</a>
+                    <a href="{{ path('app_mailing_test', {'id': mailing.id}) }}" class="btn btn-outline-info">TEST</a>
+                </div>
+                <h2>Edit mailing</h2>
+                {{ form(form) }}
+
+                {% set images = mailing.getMailingImages().getValues() %}
+                {% if images|length %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="text-gray-600">Image:</div>
+                        </div>
+                    </div>
+                    {% for image in images %}
+                        <div class="row mt-2">
+                            <div class="col-5">
+                                <img
+                                    src="{{ asset('uploads/images/mailing/' ~ mailing.id ~ '/' ~ image.filenameMiddle) }}"
+                                    style="width: 250px"
+                                    alt="{{ image.filenameMiddle }}"
+                                >
+                            </div>
+                            <div class="col-7">
+                                <div class="col-12">
+                                    <a href="{{ path('app_mailing_image_delete', {'id': image.id}) }}" class="btn btn-outline-info">DELETE</a>
+                                </div>
+                            </div>
+                        </div>                        
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="col-lg-6">
+                <h3>Unsubscribe blocks</h3>
+                <div id="container-mailing-unsubscribe-blocks" >
+                    {% for unsubscribeBlock in unsubscribeBlocks %}
+                        <h5>{{ unsubscribeBlock.name }}</h5>
+                        <div>{{ unsubscribeBlock.value }}</div>
+                        <hr>
+                        <div>rendered:<div>
+                        <div>{{ unsubscribeBlock.value |raw }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="container-mailing-editor-hide" hidden="hidden" >{{ mailing.body | raw }}</div>
+    <script>
+        require.config({ paths: { vs: '/build/js/plugins/monaco-editor/min/vs' } });
+        require(['vs/editor/editor.main'], function () {
+            var editor = monaco.editor.create(document.getElementById('container-mailing-editor'), {
+                value: document.getElementById('container-mailing-editor-hide').innerHTML,
+                language: 'html'
+            });
+        });
+    </script>
+{% endblock %}
