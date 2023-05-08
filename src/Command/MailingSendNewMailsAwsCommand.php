@@ -121,6 +121,9 @@ class MailingSendNewMailsAwsCommand extends Command
               continue;
             }
             $ladiesMail = $us->getNewMailsLadies($this->customConnect, $this->userClientsRepository, $uid, $fn, $ln);
+            if (empty($ladiesMail)) {
+              continue;
+            }
             $unsubsribeUrl = $us->mailPromoGetUrlUnsub($hashUnsub);
             $data = [
                 "ladies" => $ladiesMail,
