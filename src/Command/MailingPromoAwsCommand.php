@@ -80,7 +80,11 @@ class MailingPromoAwsCommand extends Command
         }
         $emails = array();
         $marker = $this->mailingFormHandler->createMarkerEmailUTM(self::TYPE_MARKER_MAIL);
-        $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_BUSY);
+
+        if (!$isTest) {
+            $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_BUSY);
+        }
+        $cnt = 0;
         foreach ($uss as $key => $value) {
             $email = strtolower($value['user_email']);
             if (!empty($emails[$email])) {
@@ -120,12 +124,16 @@ class MailingPromoAwsCommand extends Command
                 "marker" => $marker
             ];
             $io->note(sprintf('User %s: %s', $value["user_id"], $email));
+            $cnt++;
             $this->mailingFormHandler->processSendMailing($m, $data);
             sleep(self::SLEEP);
         }
 
+        if (!$isTest) {
+            $m->setQuantity($cnt);
+            $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_FINISHED);
+        }
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
-        $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_FINISHED);
 
         return Command::SUCCESS;
     }

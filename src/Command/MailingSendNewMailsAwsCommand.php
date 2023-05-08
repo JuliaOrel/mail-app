@@ -91,6 +91,7 @@ class MailingSendNewMailsAwsCommand extends Command
             $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_BUSY);
         }
         $urlStrRoot = $_ENV["APP_UPDATE_INBOX_URL"];
+        $cnt = 0;
         foreach ($uss as $key => $man) {
             $email = strtolower($man['user_email']);
             if (!empty($emails[$email])) {
@@ -137,7 +138,7 @@ class MailingSendNewMailsAwsCommand extends Command
                 "marker" => $marker
             ];     
             $this->mailingFormHandler->processSendMailingNewMails($m, $data);
-
+            $cnt++;
             $io->note(sprintf('User %s: %s , visible: %s', $uid, $email, $visible));
             
             sleep(self::SLEEP);
@@ -145,6 +146,7 @@ class MailingSendNewMailsAwsCommand extends Command
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
         if (!$isTest) {
+            $m->setQuantity($cnt);
             $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_FINISHED);
             $ma = $this->mailingManager->getMailingNewMailsCronTask();
             if (!$ma) {
