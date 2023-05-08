@@ -99,8 +99,8 @@ class MailingSendNewMailsAwsCommand extends Command
             $emails[$email] = $email;
             $uid = $man['user_id'];
             $email = $man['user_email'];
-            $fn = $man['user_name'];
-            $ln = $man['user_surname'];
+            $fn = (!empty($man["user_name"]))?$man["user_name"]:"";
+            $ln = (!empty($man["user_surname"]))?$man["user_surname"]:"";
             $visible = $man['user_visible'];
             $urlStr = "";
             $isActive = $us->userIsActive($this->customConnect, $this->userClientsRepository, $uid);
