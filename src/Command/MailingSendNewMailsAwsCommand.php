@@ -150,6 +150,7 @@ class MailingSendNewMailsAwsCommand extends Command
             $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_FINISHED);
             $ma = $this->mailingManager->getMailingNewMailsCronTask();
             if (!$ma) {
+                $m->setQuantity(0);
                 $this->mailingManager->createMailingCloneStatus($m, MailingManager::MAILING_STATUS_ACTIVE);
             }
         }
