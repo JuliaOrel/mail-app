@@ -114,10 +114,27 @@ class MailingSendNewMailsAwsCommand extends Command
                 $this->mailingFormHandler->userUnsubscribeMailing($m, $man);
                 continue;
             }
+            $hashUnsub = $us->deliveryGetUnsubscribeUserHashNewMails($this->customConnect, $this->userClientsRepository, $man["user_id"]);
+            if (!$hashUnsub) {
+              continue;
+            }
             $ladiesMail = $us->getNewMailsLadies($this->customConnect, $this->userClientsRepository, $uid, $fn, $ln);
-            dd($ladiesMail);
-            $io->note(sprintf('User %s: %s , visible: %s', $uid, $email, $visible));
+            $unsubsribeUrl = $us->mailPromoGetUrlUnsub($hashUnsub);
+            $data = [
+                "ladies" => $ladiesMail,
+                "user_id" => $man["user_id"],
+                "user_name" => $man["user_name"],
+                "user_surname" => $man["user_surname"],
+                "user_email" => $email,
+                "unsubsribe_url" => $unsubsribeUrl,
+                "hash_unsub" => $hashUnsub,
+                "pixel" => $this->mailingManager->createUrlPixel($man["user_id"], $m->getId()),
+                "marker" => $marker
+            ];     
+            $this->mailingFormHandler->processSendMailingNewMails($m, $data);
 
+            $io->note(sprintf('User %s: %s , visible: %s', $uid, $email, $visible));
+            
             sleep(self::SLEEP);
         }
 

@@ -96,6 +96,26 @@ class MailingFormHandler
         $this->_mailingManager->saveMailingItemSend($data["user_id"], $mailing->getId());
         return $mailing;
     }
+    public function processSendMailingNewMails(Mailing $mailing, array $data)
+    {
+        $emailSubject = $mailing->getTitle();
+        $emailBody = $mailing->getBody();
+        $template = $this->twig->createTemplate($emailBody);
+        $emailBody = $template->render($data);
+        $emailText = strip_tags($emailBody);
+        $fname = (!empty($data["user_name"]))?$data["user_name"]:"";
+        $lname = (!empty($data["user_surname"]))?$data["user_surname"]:"";
+        $sign = $this->_mailingManager->createPixelUserSign($data["user_id"], $mailing->getId());
+        $this->editHrefForTrackingFromStr($emailBody, $sign, self::HREF_REDIRECT);
+        $r = $this->mailingEmailSender->senEmailNewMails($data["user_email"], $fname, $lname, $emailSubject, $emailBody, $data["unsubsribe_url"]);
+        $this->_mailingManager->createMailingItem($data["user_id"], $data["user_email"], $mailing->getId());
+        if ($r["error"]) {
+            $this->_mailingManager->saveMailingItemSendError($data["user_id"], $mailing->getId(), $r["error_text"]);
+            return $mailing;
+        }
+        $this->_mailingManager->saveMailingItemSend($data["user_id"], $mailing->getId());
+        return $mailing;
+    }
     public function createMarkerEmailUTM(string $type = "news-aws"): string
     {
         $mediumUtm = $type . date('l-Y');

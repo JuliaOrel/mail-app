@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\UserClients;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -93,42 +94,57 @@ class UserClientsRepository extends ServiceEntityRepository
                     LEFT JOIN bm_users AS bmu ON bmu.user_id = mcuft.user_from
                     WHERE mcuft.user_to = :uid
                     AND mcuft.mct_id IN ( 2, 11 )
-                    AND mcuft.last_date > ( NOW( ) - INTERVAL 12 HOUR )
+                    AND mcuft.last_date > ( NOW( ) - INTERVAL 24 HOUR )
                     ORDER BY mcuft.last_date DESC
                     LIMIT 8';
         $stmt = $customConnect->prepare($sql);
         $resultSet = $stmt->executeQuery(["uid" => $uid]);
         $mailsInfo = $resultSet->fetchAllAssociative();
-        dd("mailsInfo", $mailsInfo);
+
         foreach ($mailsInfo as $k => $mail) {
             if ($k > 3) {
               continue;
             }
-            $mct_id = (int) $mail['mct_id'];
-            $last_id = (int) $mail['last_id'];
-            if ($mct_id == 2) {
+            $mctId = (int) $mail['mct_id'];
+            $lastId = (int) $mail['last_id'];
+            if ($mctId == 2) {
               $messageSql = "SELECT mail_subject AS subject, mail_date, mail_attach
                                     FROM bm_mails
-                                    WHERE mail_id = " . $last_id;
-            } elseif ($mct_id == 11) {
+                                    WHERE mail_id = :last_id";
+            } elseif ($mctId == 11) {
               $messageSql = "SELECT imm.subject, imm.created_act AS mail_date, ima.name AS mail_attach
                                 FROM introductional_mail_messages as imm
                                 LEFT JOIN introductional_mail_users as imu
                                 ON imm.message_id = imu.message_id
                                 LEFT JOIN introductional_mail_attachments as ima
                                 ON imm.message_id = ima.message_id
-                                WHERE imu.id = " . $last_id;
+                                WHERE imu.id = :last_id";
             } else {
                 continue;
             }
+            $ladies[$k] = [];
             $stmt = $customConnect->prepare($messageSql);
-            $resultSet = $stmt->executeQuery();
+            $resultSet = $stmt->executeQuery(["last_id" => $lastId]);
             $message = $resultSet->fetchAllAssociative();
-            dd($message);
+            $message = reset($message);
+            $ladies[$k]['subject'] = UserClients::formatIntroductionalMsg($message['subject'], $fn, $ln);            
+            list($tmp_date, $ladies[$k]['time']) = explode(" ", $message['mail_date']);
+            $date = new DateTime($tmp_date);
+            $ladies[$k]['date'] = $date->format('d F Y');
+            $ladies[$k]['lady_id'] = $mail['user_from'];
+            $ladies[$k]['lady_id2'] = number_format($mail['user_from'], 0, '', ' ');
+            $ladies[$k]['lady_name'] = $mail['user_name'];
+            $ladies[$k]['lady_avatar'] = "https://veronikalove.com/images/frontend/avatars/big/" . $mail['user_avatar'];
+            if (!empty($message->mail_attach)) {
+                $ladies[$k]['attachment_type'] = UserClients::checkTypeAttach($message->mail_attach);
+            }
+            else {
+                $ladies[$k]['attachment_type'] = 1;
+            }
         }
-
+        
         return $ladies;
-     }
+    }
     
     /**
      * @return int Returns int
@@ -173,6 +189,17 @@ class UserClientsRepository extends ServiceEntityRepository
         $resultSet = $stmt->executeQuery(["uid" => $uid]);
         return $resultSet->fetchOne();
        }
+    
+       /**
+       * @return string Returns string
+        */
+        public function getUnsubscribeUserHashNewMails($customConnect, int $uid): string
+        {
+         $sql = "SELECT `user_hash` FROM bm_users_unsubscribe_email WHERE user_id = :uid AND type_unsubscribe = 'unsubscribe_message'";
+         $stmt = $customConnect->prepare($sql);
+         $resultSet = $stmt->executeQuery(["uid" => $uid]);
+         return $resultSet->fetchOne();
+        }
 
 //    public function findOneBySomeField($value): ?UserClients
 //    {
