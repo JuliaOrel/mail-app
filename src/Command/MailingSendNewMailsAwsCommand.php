@@ -86,8 +86,10 @@ class MailingSendNewMailsAwsCommand extends Command
             // ...
         }
         $emails = array();
-        $marker = $this->mailingFormHandler->createMarkerEmailUTM(self::TYPE_MARKER_MAIL);
-        // $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_BUSY);
+        $marker = $this->mailingFormHandler->createMarkerEmailUTM(self::TYPE_MARKER_MAIL); 
+        if (!$isTest) {
+            $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_BUSY);
+        }
         $urlStrRoot = $_ENV["APP_UPDATE_INBOX_URL"];
         foreach ($uss as $key => $man) {
             $email = strtolower($man['user_email']);
@@ -139,12 +141,14 @@ class MailingSendNewMailsAwsCommand extends Command
         }
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
-        // $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_FINISHED);
-        // $ma = $this->mailingManager->getMailingNewMailsCronTask();
-        // if (!$ma) {
-        //     $this->mailingManager->createMailingCloneStatus($m, MailingManager::MAILING_STATUS_ACTIVE);
-        // }
-        
+        if (!$isTest) {
+            $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_FINISHED);
+            $ma = $this->mailingManager->getMailingNewMailsCronTask();
+            if (!$ma) {
+                $this->mailingManager->createMailingCloneStatus($m, MailingManager::MAILING_STATUS_ACTIVE);
+            }
+        }
+
         return Command::SUCCESS;
     }
 }
