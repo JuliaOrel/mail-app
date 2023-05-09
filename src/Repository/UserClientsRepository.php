@@ -122,12 +122,16 @@ class UserClientsRepository extends ServiceEntityRepository
             } else {
                 continue;
             }
-            $ladies[$k] = [];
             $stmt = $customConnect->prepare($messageSql);
             $resultSet = $stmt->executeQuery(["last_id" => $lastId]);
             $message = $resultSet->fetchAllAssociative();
             $message = reset($message);
-            $ladies[$k]['subject'] = UserClients::formatIntroductionalMsg($message['subject'], $fn, $ln);            
+            $subject = (!empty($message["subject"]))?$message["subject"]:"";
+            if (empty($subject)) {
+                continue;
+            }
+            $ladies[$k] = [];
+            $ladies[$k]['subject'] = UserClients::formatIntroductionalMsg($subject, $fn, $ln);            
             list($tmp_date, $ladies[$k]['time']) = explode(" ", $message['mail_date']);
             $date = new DateTime($tmp_date);
             $ladies[$k]['date'] = $date->format('d F Y');

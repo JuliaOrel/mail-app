@@ -125,6 +125,11 @@ class MailingSendNewMailsAwsCommand extends Command
             if (empty($ladiesMail)) {
               continue;
             }
+            $sent = $this->mailingManager->isMailingItemSent($uid, $email, $m->getId());
+            if ($sent) {
+                $io->note(sprintf('User already sent %s: %s', $uid, $email));
+                continue;
+            }
             $unsubsribeUrl = $us->mailPromoGetUrlUnsub($hashUnsub);
             $data = [
                 "ladies" => $ladiesMail,
