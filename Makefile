@@ -6,5 +6,9 @@ run:
 	symfony server:start -d
 	docker-compose up -d
 
+stop:
+	symfony server:stop
+	docker-compose down
+
 test:
 	go test -v ./...
