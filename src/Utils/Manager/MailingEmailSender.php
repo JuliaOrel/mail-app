@@ -144,6 +144,8 @@ class MailingEmailSender
             $result["error_is"] = get_class($ex);
             $result["error_text"] = "Email not sent. {$mail->ErrorInfo}";
         }
+        $mail->clearAllRecipients();
+        $mail->clearReplyTos();
         $mail->clearAddresses();
         $mail->clearAttachments();
         $mail->clearCustomHeaders();
