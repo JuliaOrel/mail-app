@@ -23,23 +23,35 @@
 							<th>Mailing</th>
 							<th>User</th>
 							<th>Sent</th>
-							<th>Is published</th>
-							<th></th>
+							<th>Read</th>
+							<th>Click</th>
+							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for mailingItem in mailingItems %}
 							<tr>
 								<td>{{ mailingItem.id }}</td>
-								<td>-</td>
+								<td>{{ mailingItem.mailingId }}</td>
 								<td>{{ mailingItem.userId }}</td>
-								<td>{{ mailingItem.sentAt }}</td>
-								<td>
-									<i class="fas fa-check fa-sm" style="color: {% if mailing.isPublished %}green{% else %}lightgray{% endif %};"></i>
+								<td>								
+									{% if mailingItem.sentAt != null %}
+										{{ mailingItem.sentAt | date('Y-m-d H:i:s') }}
+									{% endif %}
+								</td>
+								<td>								
+									{% if mailingItem.openAt != null %}
+										{{ mailingItem.openAt | date('Y-m-d H:i:s') }}
+									{% endif %}
+								</td>
+								<td>								
+									{% if mailingItem.readAt != null %}
+										{{ mailingItem.readAt | date('Y-m-d H:i:s') }}
+									{% endif %}
 								</td>
 								<td>
 									<a href="/mailing-item/edit/{{ mailingItem.id }}" class="btn btn-outline-info">Edit</a>
-									<a href="/mailing-item/delete/{{ mailingItem.id }}" class="btn btn-outline-danger">Edit</a>
+									<a href="/mailing-item/delete/{{ mailingItem.id }}" class="btn btn-outline-danger">Delete</a>
 								</td>
 							</tr>
 						{% endfor %}

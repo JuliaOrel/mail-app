@@ -23,12 +23,11 @@ class MailingItemController extends AbstractController
         ]);
     }
     /**
-     * @Route("/mailing/items", methods="GET", name="app_mailing_items", requirements={"id"="\d+"})
+     * @Route("/mailing/items/{id}", methods="GET", name="app_mailing_items", requirements={"id"="\d+"})
      */
-    public function items(MailingItemRepository $mailingItemRepository): Response
+    public function items(MailingItemRepository $mailingItemRepository,Request $request, int $id): Response
     {
-        $mis = $mailingItemRepository->findBy([], ["id" => "DESC"]);
-        
+        $mis = $mailingItemRepository->findBy(["MailingId" => $id], ["id" => "DESC"]);
         return $this->render('mailing_item/items.html.twig', [
             'mailingItems' => $mis,
         ]);
@@ -41,9 +40,9 @@ class MailingItemController extends AbstractController
     {
         $ml = new MailingItem();
         if ($id) {
-            $ml = $entityManager->getRepository(Mailing::class)->find($id);
+            $ml = $entityManager->getRepository(MailingItem::class)->find($id);
         }
-        $form = $this->createForm(MailingFormType::class, $ml);        
+        $form = $this->createForm(MailingItemFormType::class, $ml);        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -54,7 +53,7 @@ class MailingItemController extends AbstractController
             return $this->redirectToRoute("app_mailing_edit", ["id" => $ml->getId()]);
         }
         
-        return $this->render('mailing/edit.html.twig', [
+        return $this->render('mailing_item/edit.html.twig', [
             "form" => $form->createView()
         ]);
     }

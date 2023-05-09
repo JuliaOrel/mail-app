@@ -19,17 +19,19 @@
 				<table class="table table-bordered" id="main_table">
 					<thead>
 						<tr>
-							<th>Id</th>
-							<th>Title</th>
-							<th>Quantity</th>
-							<th>Is published</th>
+							<th class="text-center" >Id</th>
+							<th class="text-center" >Title</th>
+							<th class="text-center" >Quantity</th>
+							<th class="text-center" >Scheduled At</th>
 							<th></th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for mailing in mailings %}
 							<tr>
-								<td>{{ mailing.id }}</td>
+								<td class="text-center" published="{{ mailing.isPublished }}">
+									<span>{{ mailing.id }}</span>
+								</td>
 								<td>
 									{{ mailing.title }}
 									{% set images = mailing.getMailingImages().getValues() %}
@@ -42,12 +44,15 @@
 										>
 									{% endif %}
 								</td>
-								<td>{{ mailing.quantity }}</td>
-								<td>
-									<i class="fas fa-check fa-sm" style="color: {% if mailing.isPublished %}green{% else %}lightgray{% endif %};"></i>
+								<td class="text-center" >{{ mailing.quantity }}</td>
+								<td class="text-center" >
+									{% if mailing.scheduledAt != null %}
+										{{ mailing.scheduledAt | date('Y-m-d H:i:s') }}
+									{% endif %}
 								</td>
-								<td>
-									<a href="/mailing/edit/{{ mailing.id }}" class="btn btn-outline-info">Edit</a>
+								<td class="text-center" >
+									<a href="{{ path('app_mailing_items', {'id': mailing.id}) }}" class="btn btn-outline-info">List men</a>
+									<a href="/mailing/edit/{{ mailing.id }}" class="btn btn-outline-danger">Edit</a>
 									<a href="/mailing/test/{{ mailing.id }}" class="btn btn-outline-success">Test</a>
 								</td>
 							</tr>
