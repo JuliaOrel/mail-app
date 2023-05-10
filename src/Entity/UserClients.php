@@ -95,6 +95,17 @@ class UserClients
 
         return $uss;
     }
+    public function getUsersForMailingNewProfiles(object $customConnect, UserClientsRepository $userClientsRepository, array $clients = null): array
+    {
+        if ($clients) {
+            $uss = $userClientsRepository->getUsersForMailingNewProfiles($customConnect, $clients);
+        }
+        else {
+            $uss = $userClientsRepository->getUsersForMailingNewProfiles($customConnect);
+        }
+
+        return $uss;
+    }
     public function userIsActive(object $customConnect, UserClientsRepository $userClientsRepository, int $uid): bool
     {
         $b = $userClientsRepository->getUserStatus($customConnect, $uid);

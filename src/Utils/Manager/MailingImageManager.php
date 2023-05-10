@@ -59,10 +59,10 @@ class MailingImageManager
         ];
         $imageMiddle = $this->_imageResizer->resizesImageAndSave($this->_uploadsTempDir,$tempImageFileName, $imageMiddleParams);
         $imageBigParams = [
-            "width" => 800,
+            "width" => null,
             "height" => null,
             "newFolder" => $mailingDir,
-            "newFilename" => sprintf("%s_%s.jpg", $filenameId, "big"),
+            "newFilename" => sprintf("%s_%s.%s", pathinfo($tempImageFileName, PATHINFO_FILENAME), "orig", pathinfo($tempImageFileName, PATHINFO_EXTENSION)),
         ];
         $imageBig = $this->_imageResizer->resizesImageAndSave($this->_uploadsTempDir,$tempImageFileName, $imageBigParams);
 

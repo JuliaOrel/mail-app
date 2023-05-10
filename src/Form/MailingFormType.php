@@ -39,7 +39,7 @@ class MailingFormType extends AbstractType
             ->add('category', ChoiceType::class, [
                 "label" => "Category",
                 'choices'  => MailingManager::categoryOptions(),
-                "required" => false,
+                "required" => true,
                 "attr" => [
                     "class" => "form-control"
                 ]

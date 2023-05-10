@@ -25,25 +25,47 @@ class UserClientsRepository extends ServiceEntityRepository
     /**
      * @return array[] Returns an array of UserClients objects
      */
-     public function getUsersForMailingNewMails($customConnect, array $users = null): array
-     {
+    public function getUsersForMailingNewMails($customConnect, array $users = null): array
+    {
+    $usersStr = "";
+    if ($users) {            
+        $usersStr = implode(",", $users);
+        $usersStr = ' AND A.user_id IN(' . $usersStr . ')';
+    }
+        $sql = "SELECT A.user_id, A.user_name, A.user_surname, A.user_email, C.unsubscribe_daily,  A.user_visible 
+            FROM bm_users A
+            LEFT JOIN bm_users_unsubscribe AS C ON A.user_id = C.user_id
+            RIGHT JOIN bm_users_confirmed AS D ON A.user_id = D.user_id AND D.confirmed_date IS NOT NULL
+            WHERE A.user_gender =1 {$usersStr}
+                AND A.user_status = 0
+                AND (C.unsubscribe_message IS NULL OR C.unsubscribe_message = 0)
+            GROUP BY A.user_id";
+        $stmt = $customConnect->prepare($sql);
+        $resultSet = $stmt->executeQuery();
+        return $resultSet->fetchAllAssociative();
+    }
+    
+    /**
+     * @return array[] Returns an array of UserClients objects
+    */
+    public function getUsersForMailingNewProfiles($customConnect, array $users = null): array
+    {
         $usersStr = "";
         if ($users) {            
             $usersStr = implode(",", $users);
             $usersStr = ' AND A.user_id IN(' . $usersStr . ')';
         }
-         $sql = "SELECT A.user_id, A.user_name, A.user_surname, A.user_email, C.unsubscribe_daily,  A.user_visible 
-                FROM bm_users A
-                LEFT JOIN bm_users_unsubscribe AS C ON A.user_id = C.user_id
-                RIGHT JOIN bm_users_confirmed AS D ON A.user_id = D.user_id AND D.confirmed_date IS NOT NULL
-                WHERE A.user_gender =1 {$usersStr}
-                    AND A.user_status = 0
-                    AND (C.unsubscribe_message IS NULL OR C.unsubscribe_message = 0)
-                GROUP BY A.user_id";
-         $stmt = $customConnect->prepare($sql);
-         $resultSet = $stmt->executeQuery();
-         return $resultSet->fetchAllAssociative();
-     }
+        $sql = "SELECT A.user_id, user_name, user_surname, user_email, C.unsubscribe_daily
+            FROM bm_users A
+            LEFT JOIN bm_users_unsubscribe AS C ON A.user_id = C.user_id
+            RIGHT JOIN bm_users_confirmed AS D ON A.user_id = D.user_id AND D.confirmed_date IS NOT NULL
+            WHERE A.user_gender =1 {$usersStr}
+            AND A.user_status =0
+            AND (C.unsubscribe_daily IS NULL OR C.unsubscribe_daily = 0)";
+        $stmt = $customConnect->prepare($sql);
+        $resultSet = $stmt->executeQuery();
+        return $resultSet->fetchAllAssociative();
+    }
     
    /**
     * @return array[] Returns an array of UserClients objects

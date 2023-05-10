@@ -3,6 +3,7 @@
 namespace App\Utils\File;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
+use Symfony\Component\Filesystem\Filesystem;
 
 class ImageResizer
 {
@@ -10,10 +11,15 @@ class ImageResizer
      * @var Imagine
      */
     private  $_imagine;
+    /**
+     * @var Filesystem
+     */
+    private  $_fs;
 
     public function __construct()
     {
         $this->_imagine = new Imagine();
+        $this->_fs = new Filesystem();
     }
 
     /**
@@ -26,6 +32,12 @@ class ImageResizer
     {
         $originalFilePath = $originalFileFolder . "/" . $originalFilename;
         list($imageWidth, $imageHeight) = getimagesize($originalFilePath);
+        $isOrig = false;
+        if (empty($targetParams["width"]) && empty($targetParams["height"])) {
+            $targetParams["width"] = $imageWidth;
+            $targetParams["height"] = $imageHeight;
+            $isOrig = true;
+        }
         $ratio = $imageWidth / $imageHeight;
         $targetWidth = $targetParams["width"];
         $targetHeight = $targetParams["height"];
@@ -46,6 +58,10 @@ class ImageResizer
         $targetFilePath = sprintf("%s/%s", $targetFolder, $targetFilename);
 
         $imagineFile = $this->_imagine->open($originalFilePath);
+        if ($isOrig) {
+            $this->_fs->copy($originalFilePath, $targetFilePath);
+            return $targetFilename;
+        }
         $imagineFile->resize(
             new Box($targetWidth, $targetHeight)
         )->save($targetFilePath);
