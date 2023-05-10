@@ -8,6 +8,7 @@ use App\Repository\MailingItemRepository;
 use App\Repository\MailingRepository;
 use App\Repository\UserClientsRepository;
 use App\Utils\Manager\MailingManager;
+use DateTimeImmutable;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,7 +21,7 @@ class MailingSendNewMailsAwsCommand extends Command
 {
     const TYPE_ARG = "test";
     const SLEEP = 1;
-    const TYPE_MARKER_MAIL = "new-mails-aws";
+    const TYPE_MARKER_MAIL = "nm-aws";
     protected static $defaultName = 'app:mailing:send:new-mails-aws';
     protected static $defaultDescription = 'Mailing new mails for men';
 
@@ -66,6 +67,8 @@ class MailingSendNewMailsAwsCommand extends Command
         }
 
         $m = $this->mailingManager->getMailingNewMailsCronTask();
+        $marker = $this->mailingFormHandler->createMarkerEmailUTM(self::TYPE_MARKER_MAIL); 
+        dd($marker);
         if (!$m) {
             $io->success("Cron PROMO doesn't have a task");
             return Command::SUCCESS;
@@ -86,8 +89,10 @@ class MailingSendNewMailsAwsCommand extends Command
             // ...
         }
         $emails = array();
-        $marker = $this->mailingFormHandler->createMarkerEmailUTM(self::TYPE_MARKER_MAIL); 
         if (!$isTest) {
+            $date = new DateTimeImmutable();
+            $date->format('Y-m-d H:i:s');     
+            $m->setScheduledAt($date);
             $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_BUSY);
         }
         $urlStrRoot = $_ENV["APP_UPDATE_INBOX_URL"];
@@ -151,6 +156,9 @@ class MailingSendNewMailsAwsCommand extends Command
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
         if (!$isTest) {
+            $date = new DateTimeImmutable();
+            $date->format('Y-m-d H:i:s');     
+            $m->setScheduledAt($date);
             $m->setQuantity($cnt);
             $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_FINISHED);
             $ma = $this->mailingManager->getMailingNewMailsCronTask();

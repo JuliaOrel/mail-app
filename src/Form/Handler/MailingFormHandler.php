@@ -118,9 +118,9 @@ class MailingFormHandler
     }
     public function createMarkerEmailUTM(string $type = "news-aws"): string
     {
-        $mediumUtm = $type . date('l-Y');
-        $compaignUtm = $type . date('Y');
-        $marker = "utm_source=" . $type . date('jMY') . "&utm_medium={$mediumUtm}&utm_campaign={$compaignUtm}";
+        $mediumUtm = $type . date('Y');
+        $compaignUtm = $type;
+        $marker = "utm_source=" . $type . date('-l') . "&utm_medium={$mediumUtm}&utm_campaign={$compaignUtm}";
         $marker = strtolower($marker);
 
         return $marker;

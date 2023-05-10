@@ -22,7 +22,7 @@ class MailingPromoAwsCommand extends Command
 {
     const TYPE_ARG = "test";
     const SLEEP = 1;
-    const TYPE_MARKER_MAIL = "promo-aws";
+    const TYPE_MARKER_MAIL = "ns-aws";
     protected static $defaultName = 'app:mailing:send:mail-promo-aws';
     protected static $defaultDescription = 'Mailing news and promo for men';
 
