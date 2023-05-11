@@ -21,7 +21,7 @@ class MailingSendNewMailsAwsCommand extends Command
 {
     const TYPE_ARG = "test";
     const SLEEP = 1;
-    const TYPE_MARKER_MAIL = "nm-aws";
+    const TYPE_MARKER_MAIL = "new-mails-aws";
     protected static $defaultName = 'app:mailing:send:new-mails-aws';
     protected static $defaultDescription = 'Mailing new mails for men';
 

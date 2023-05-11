@@ -121,7 +121,7 @@ class MailingFormHandler
         $mediumUtm = $type . date('Y');
         $compaignUtm = $type;
         $marker = "utm_source=" . $type . date('-l') . "&utm_medium={$mediumUtm}&utm_campaign={$compaignUtm}";
-        $marker = strtolower($marker);
+        $marker = urlencode(strtolower($marker));
 
         return $marker;
     }    
