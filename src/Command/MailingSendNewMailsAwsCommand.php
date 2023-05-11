@@ -68,7 +68,7 @@ class MailingSendNewMailsAwsCommand extends Command
 
         $m = $this->mailingManager->getMailingNewMailsCronTask();
         $marker = $this->mailingFormHandler->createMarkerEmailUTM(self::TYPE_MARKER_MAIL); 
-        dd($marker);
+        
         if (!$m) {
             $io->success("Cron PROMO doesn't have a task");
             return Command::SUCCESS;
