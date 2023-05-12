@@ -69,6 +69,10 @@ class MailingSendNewProfilesAwsCommand extends Command
         $m = $this->mailingManager->getMailingNewProfilesCronTask();
         $marker = $this->mailingFormHandler->createMarkerEmailUTM(self::TYPE_MARKER_MAIL); 
         
+        if (!$m) {
+            $io->success("Cron PROMO doesn't have a task");
+            return Command::SUCCESS;
+        }
         if ($arg1) {
             $io->note(sprintf('You passed an argument: %s', $arg1));
         }
@@ -100,7 +104,7 @@ class MailingSendNewProfilesAwsCommand extends Command
             $m->setScheduledAt($date);
             $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_BUSY);
         }
-        dd($m);
+        
         $cnt = 0;
         foreach ($uss as $key => $man) {
             $email = strtolower($man['user_email']);
