@@ -83,6 +83,7 @@ class MailingSendNewMailsAwsCommand extends Command
         }
         if (empty($uss)) {
             $io->warning('Mailing does not have users for new mails');
+            return Command::INVALID;
         }
         
         if ($input->getOption('option1')) {

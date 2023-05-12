@@ -106,6 +106,22 @@ class UserClients
 
         return $uss;
     }
+    public function getNewProfilesLadies(object $customConnect, UserClientsRepository $userClientsRepository, array $clients = null): array
+    {
+        $ls = $userClientsRepository->getNewProfilesLadies($customConnect);
+        $ladies = [];
+        foreach ($ls as $k=>$lady) {        
+            $ladies[] = array(
+                'id' => $lady['id'],
+                'name' => $lady['FirstName'],
+                'age' => self::AgeFromBDate($lady['b_date']),
+                'photo' => $lady['photo'],
+                'i' => $k,
+            );
+        }
+
+        return $ladies;
+    }
     public function userIsActive(object $customConnect, UserClientsRepository $userClientsRepository, int $uid): bool
     {
         $b = $userClientsRepository->getUserStatus($customConnect, $uid);
@@ -129,6 +145,14 @@ class UserClients
             return true;
         }
         return false;
+    }
+    public function deliveryGetUnsubscribeUserHashNewProfiles(object $customConnect, UserClientsRepository $userClientsRepository, int $uid): string
+    {
+        $b = $userClientsRepository->getUnsubscribeUserHashNewProfiles($customConnect, $uid);
+        if (!empty($b)) {
+            return $b;
+        }
+        return null;
     }
     public function getNewMailsLadies(object $customConnect, UserClientsRepository $userClientsRepository, int $uid, string $fn, string $ln): array
     {
@@ -211,5 +235,24 @@ class UserClients
                 return false;
         }	
         return true;
+    }
+    public static function AgeFromBDate($date){
+        ///// date in Y-m-d h:i:s format
+        $year = intval(substr($date,0,4));
+        $month = intval(substr($date,5,2));
+        $day = intval(substr($date,8,2));
+        $nYear = date("Y");
+        $nMonth = date("m");
+        $nDay = date("d");
+        if ($month==$nMonth) {
+            if ($day>$nDay) {
+                $newAge = floor(($nYear - $year)+($nMonth - $month-1)/12);
+            } else {
+                $newAge = floor(($nYear - $year) + ($nMonth - $month)/12);
+            }
+        } else {
+            $newAge = floor(($nYear - $year) + ($nMonth - $month)/12);
+        }
+        return $newAge;
     }
 }

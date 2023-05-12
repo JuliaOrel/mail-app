@@ -107,6 +107,22 @@ class MailingManager
     /**
      * @return Mailing|null
      */
+    public function getMailingNewProfilesCronTask(): ?Mailing
+    {
+        $mailingRepository = $this->_entityManager->getRepository(Mailing::class);
+        $m = $mailingRepository->findOneBy([
+            "status" => self::MAILING_STATUS_ACTIVE,
+            "isDeleted" => null,
+            "isPublished" => true,
+            "category" => self::MAILING_CATEGORY_NEW_PROFILES
+        ]);
+
+        return $m;
+    }
+
+    /**
+     * @return Mailing|null
+     */
     public function getMailingPromoCronTask(): ?Mailing
     {
         $cDate = date('Y-m-d H:00:00');

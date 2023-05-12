@@ -55,13 +55,33 @@ class UserClientsRepository extends ServiceEntityRepository
             $usersStr = implode(",", $users);
             $usersStr = ' AND A.user_id IN(' . $usersStr . ')';
         }
-        $sql = "SELECT A.user_id, user_name, user_surname, user_email, C.unsubscribe_daily
+        $sql = "SELECT A.user_id, A.user_name, A.user_surname, A.user_email, C.unsubscribe_daily
             FROM bm_users A
             LEFT JOIN bm_users_unsubscribe AS C ON A.user_id = C.user_id
             RIGHT JOIN bm_users_confirmed AS D ON A.user_id = D.user_id AND D.confirmed_date IS NOT NULL
             WHERE A.user_gender =1 {$usersStr}
             AND A.user_status =0
             AND (C.unsubscribe_daily IS NULL OR C.unsubscribe_daily = 0)";
+        $stmt = $customConnect->prepare($sql);
+        $resultSet = $stmt->executeQuery();
+        return $resultSet->fetchAllAssociative();
+    }
+
+    
+    /**
+     * @return array[] Returns an array of UserClients objects
+    */
+    function getNewProfilesLadies($customConnect){
+        $sql = "SELECT 
+                    A.user_id as id, 
+                    A.user_name as FirstName,
+                    C.info_birthday as b_date,
+                    A.user_avatar as photo
+                    FROM bm_users A
+                    RIGHT JOIN bm_users_info AS C ON A.user_id=C.user_id
+                    WHERE A.user_gender=2 AND A.user_status=0 
+                    ORDER BY A.user_id DESC
+                    LIMIT 10";
         $stmt = $customConnect->prepare($sql);
         $resultSet = $stmt->executeQuery();
         return $resultSet->fetchAllAssociative();
@@ -226,6 +246,17 @@ class UserClientsRepository extends ServiceEntityRepository
          $resultSet = $stmt->executeQuery(["uid" => $uid]);
          return $resultSet->fetchOne();
         }
+    
+        /**
+        * @return string Returns string
+         */
+         public function getUnsubscribeUserHashNewProfiles($customConnect, int $uid): string
+         {
+          $sql = "SELECT `user_hash` FROM bm_users_unsubscribe_email WHERE user_id = :uid AND type_unsubscribe = 'unsubscribe_daily'";
+          $stmt = $customConnect->prepare($sql);
+          $resultSet = $stmt->executeQuery(["uid" => $uid]);
+          return $resultSet->fetchOne();
+         }
 
 //    public function findOneBySomeField($value): ?UserClients
 //    {
