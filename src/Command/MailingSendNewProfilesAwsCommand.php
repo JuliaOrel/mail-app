@@ -95,10 +95,10 @@ class MailingSendNewProfilesAwsCommand extends Command
         }
         $emails = array();
         if (!$isTest) {
-            // $date = new DateTimeImmutable();
-            // $date->format('Y-m-d H:i:s');     
-            // $m->setScheduledAt($date);
-            // $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_BUSY);
+            $date = new DateTimeImmutable();
+            $date->format('Y-m-d H:i:s');     
+            $m->setScheduledAt($date);
+            $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_BUSY);
         }
         $cnt = 0;
         foreach ($uss as $key => $man) {
