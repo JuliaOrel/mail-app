@@ -70,7 +70,7 @@ class MailingSendNewProfilesAwsCommand extends Command
         $marker = $this->mailingFormHandler->createMarkerEmailUTM(self::TYPE_MARKER_MAIL); 
         
         if (!$m) {
-            $io->success("Cron PROMO doesn't have a task");
+            $io->success("Cron NEW PROFILES doesn't have a task");
             return Command::SUCCESS;
         }
         if ($arg1) {
@@ -161,6 +161,7 @@ class MailingSendNewProfilesAwsCommand extends Command
             $ma = $this->mailingManager->getMailingNewMailsCronTask();
             if (!$ma) {
                 $m->setQuantity(0);
+                $date->modify('+1 day');
                 $this->mailingManager->createMailingCloneStatus($m, MailingManager::MAILING_STATUS_ACTIVE);
             }
         }
