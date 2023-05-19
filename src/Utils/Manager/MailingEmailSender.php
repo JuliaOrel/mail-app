@@ -71,7 +71,7 @@ class MailingEmailSender
         $mail->CharSet = $this->_charSet;
         $mail->XMailer = $this->_xmailer;
         $mail->setFrom($this->_from, $this->_fromName);
-        $mail->addReplyTo($this->_replyto, $this->_replytoName);
+        $mail->addReplyTo($this->_replytoNM, $this->_replytoNameNM);
         $mail->addAddress($emailTo, $fname);
         $mail->Subject = $emailSubject;
         $mail->DKIM_selector = $this->_dkim;
@@ -97,6 +97,8 @@ class MailingEmailSender
             $result["error_is"] = get_class($ex);
             $result["error_text"] = "Email not sent. {$mail->ErrorInfo}";
         }
+        $mail->clearAllRecipients();
+        $mail->clearReplyTos();
         $mail->clearAddresses();
         $mail->clearAttachments();
         $mail->clearCustomHeaders();
