@@ -36,6 +36,7 @@ class MailingFormType extends AbstractType
                 ]
             ])
             ->add('scheduledAt')
+            ->add('quantity')
             ->add('category', ChoiceType::class, [
                 "label" => "Category",
                 'choices'  => MailingManager::categoryOptions(),
