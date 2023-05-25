@@ -153,16 +153,15 @@ class MailingSendNewProfilesAwsCommand extends Command
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
         if (!$isTest) {
-            $date = new DateTimeImmutable();
-            $date->format('Y-m-d H:i:s');     
-            $m->setScheduledAt($date);
             $m->setQuantity($cnt);
             $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_FINISHED);
+            
             $ma = $this->mailingManager->getMailingNewProfilesCronTask();
             if (!$ma) {
+                $date = new DateTimeImmutable();
+                $date->format('Y-m-d H:i:s');   
                 $m->setQuantity(0);
-                $date->modify('+7 day'); 
-                $m->setScheduledAt($date);
+                $m->setScheduledAt($date->modify('+7 day'));
                 $this->mailingManager->createMailingCloneStatus($m, MailingManager::MAILING_STATUS_ACTIVE);
             }
         }

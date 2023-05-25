@@ -157,14 +157,16 @@ class MailingSendNewMailsAwsCommand extends Command
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
         if (!$isTest) {
-            $date = new DateTimeImmutable();
-            $date->format('Y-m-d H:i:s');     
-            $m->setScheduledAt($date);
             $m->setQuantity($cnt);
             $this->mailingManager->saveMailingStatus($m, MailingManager::MAILING_STATUS_FINISHED);
+            
             $ma = $this->mailingManager->getMailingNewMailsCronTask();
             if (!$ma) {
+                $date = new DateTimeImmutable();
+                $date->format('Y-m-d H:i:s');
                 $m->setQuantity(0);
+                $nextDay = (date("N") == 1) ? "thursday" : "monday";
+                $m->setScheduledAt($date->modify($nextDay));
                 $this->mailingManager->createMailingCloneStatus($m, MailingManager::MAILING_STATUS_ACTIVE);
             }
         }
