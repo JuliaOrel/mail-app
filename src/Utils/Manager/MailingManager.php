@@ -250,6 +250,53 @@ class MailingManager
     }
 
     /**
+     * @param Mailing
+     * @param int
+     * @return void
+     */
+    public function createMailingNewMailsCloneStatus(Mailing $mailing, int $status): void
+    {
+        $newMail = new Mailing();
+        $date = new DateTimeImmutable();
+        $date->format('Y-m-d H:i:s');
+        $nextDay = (date("N") == 1) ? "thursday" : "monday";
+        $newMail->setScheduledAt($date->modify($nextDay));
+        $newMail->setStatus($status);
+        $newMail->setBody($mailing->getBody());
+        $newMail->setTitle($mailing->getTitle());
+        $newMail->setCategory($mailing->getCategory());
+        $newMail->setIsPublished(true);
+        $newMail->setAuthor($mailing->getAuthor());
+        
+        $this->_entityManager->persist($newMail);
+        $this->_entityManager->flush();
+    }
+
+    /**
+     * @param Mailing
+     * @param int
+     * @return void
+     */
+    public function createMailingNewProfilesCloneStatus(Mailing $mailing, int $status): void
+    {
+        $newMail = new Mailing();
+        $date = new DateTimeImmutable();
+        $date->format('Y-m-d H:i:s');
+        $nextDay = '+7 day';
+        
+        $newMail->setScheduledAt($date->modify($nextDay));
+        $newMail->setStatus($status);
+        $newMail->setBody($mailing->getBody());
+        $newMail->setTitle($mailing->getTitle());
+        $newMail->setAuthor($mailing->getAuthor());
+        $newMail->setCategory($mailing->getCategory());
+        $newMail->setIsPublished(true);
+        
+        $this->_entityManager->persist($newMail);
+        $this->_entityManager->flush();
+    }
+
+    /**
      * @param int
      * @param int
      * @return string

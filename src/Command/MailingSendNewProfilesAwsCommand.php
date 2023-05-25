@@ -158,11 +158,7 @@ class MailingSendNewProfilesAwsCommand extends Command
             
             $ma = $this->mailingManager->getMailingNewProfilesCronTask();
             if (!$ma) {
-                $date = new DateTimeImmutable();
-                $date->format('Y-m-d H:i:s');   
-                $m->setQuantity(0);
-                $m->setScheduledAt($date->modify('+7 day'));
-                $this->mailingManager->createMailingCloneStatus($m, MailingManager::MAILING_STATUS_ACTIVE);
+                $this->mailingManager->createMailingNewProfilesCloneStatus($m, MailingManager::MAILING_STATUS_ACTIVE);
             }
         }
 
