@@ -36,7 +36,8 @@ class UserClientsRepository extends ServiceEntityRepository
             FROM bm_users A
             LEFT JOIN bm_users_unsubscribe AS C ON A.user_id = C.user_id
             RIGHT JOIN bm_users_confirmed AS D ON A.user_id = D.user_id AND D.confirmed_date IS NOT NULL
-            WHERE A.user_gender =1 {$usersStr}
+            WHERE A.user_gender =1 
+                {$usersStr}
                 AND A.user_status = 0
                 AND (C.unsubscribe_message IS NULL OR C.unsubscribe_message = 0)
             GROUP BY A.user_id";
@@ -97,8 +98,7 @@ class UserClientsRepository extends ServiceEntityRepository
             LEFT JOIN bm_users_unsubscribe AS C ON A.user_id = C.user_id
             RIGHT JOIN bm_users_confirmed AS D ON A.user_id = D.user_id AND D.confirmed_date IS NOT NULL
             WHERE A.user_gender = 1
-            AND A.user_status = 0
-                AND (C.unsubscribe_news IS NULL OR C.unsubscribe_news = 0)';
+            AND A.user_status = 0 AND (C.unsubscribe_news IS NULL OR C.unsubscribe_news = 0)';
         $stmt = $customConnect->prepare($sql);
         $resultSet = $stmt->executeQuery();
         return $resultSet->fetchAllAssociative();
@@ -136,7 +136,7 @@ class UserClientsRepository extends ServiceEntityRepository
                     LEFT JOIN bm_users AS bmu ON bmu.user_id = mcuft.user_from
                     WHERE mcuft.user_to = :uid
                     AND mcuft.mct_id IN ( 2, 11 )
-                    AND mcuft.last_date > ( NOW( ) - INTERVAL 24 HOUR )
+                    AND mcuft.last_date > ( NOW( ) - INTERVAL 60 HOUR )
                     ORDER BY mcuft.last_date DESC
                     LIMIT 8';
         $stmt = $customConnect->prepare($sql);
