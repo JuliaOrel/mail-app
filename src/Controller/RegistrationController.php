@@ -32,9 +32,6 @@ class RegistrationController extends AbstractController
      */
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
-        // $usersClients = new UserClients();
-        // $ux = $usersClients->getUserByUid(90650);
-        // dd($usersClients, $ux);
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -53,7 +50,7 @@ class RegistrationController extends AbstractController
             // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
-                    ->from(new Address('vitosgeen@gmail.com', 'Mail Veronikalove bot'))
+                    ->from(new Address('admin@mailman.veroniaklove.com', 'Mail Veronikalove bot'))
                     ->to($user->getEmail())
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('main/registration/confirmation_email.html.twig')
